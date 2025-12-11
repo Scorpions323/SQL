@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Falta {
+public class Profesor {
     private int id;
-    private int alumnoId;
-    private String dia;
-    private boolean justificada;
+    private String nombre;
+    private String apellido;
+    private String departamento;
 }

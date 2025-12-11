@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.etg.dam.DAO.Alumno;
-import es.etg.dam.DAO.Falta;
 import es.etg.dam.DAO.InstitutoDAO;
+import es.etg.dam.DAO.Profesor;
 
 public class InstitutoSQLiteDAOImp implements InstitutoDAO {
 
-    private static final String DATABASE_NAME = "/es/etg/dam/Instituto.db";
+    private static final String DATABASE_NAME = "/es/etg/dam/mybasedatos.db";
     private static final String JDBC_URL = "jdbc:sqlite:%s";
 
     private final Connection conn;
@@ -28,21 +28,25 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         conn = DriverManager.getConnection(url);
     }
 
-    // ALUMNO
+    // ==================== ALUMNO ====================
+
     @Override
-    public void crearTablaAlumno() throws Exception {
-        String sql = "CREATE TABLE IF NOT EXISTS alumno (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "nombre TEXT NOT NULL," +
-                "apellido TEXT NOT NULL," +
-                "edad INTEGER)";
+    public void crearTablaAlumno() throws SQLException {
+        String sql = """
+                CREATE TABLE IF NOT EXISTS alumno (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nombre TEXT NOT NULL,
+                    apellido TEXT NOT NULL,
+                    edad INTEGER
+                )
+                """;
         try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.execute();
         }
     }
 
     @Override
-    public void eliminarTablaAlumno() throws Exception {
+    public void eliminarTablaAlumno() throws SQLException {
         try (PreparedStatement st = conn.prepareStatement("DROP TABLE IF EXISTS alumno")) {
             st.execute();
         }
@@ -53,15 +57,14 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         List<Alumno> alumnos = new ArrayList<>();
         String sql = "SELECT * FROM alumno";
         try (PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                Alumno a = new Alumno(
+                alumnos.add(new Alumno(
                         rs.getInt("id"),
                         rs.getString("nombre"),
                         rs.getString("apellido"),
-                        rs.getInt("edad"));
-                alumnos.add(a);
+                        rs.getInt("edad")
+                ));
             }
         }
         return alumnos;
@@ -81,8 +84,10 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     @Override
     public int insertarAlumnos(List<Alumno> listaAlumnos) throws SQLException {
         String sql = "INSERT INTO alumno(nombre, apellido, edad) VALUES (?, ?, ?)";
+        boolean autoCommitPrev = conn.getAutoCommit();
+        conn.setAutoCommit(false);
+
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            conn.setAutoCommit(false);
             for (Alumno a : listaAlumnos) {
                 ps.setString(1, a.getNombre());
                 ps.setString(2, a.getApellido());
@@ -90,8 +95,9 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
                 ps.addBatch();
             }
             ps.executeBatch();
-            conn.setAutoCommit(true);
         }
+
+        conn.setAutoCommit(autoCommitPrev);
         return listaAlumnos.size();
     }
 
@@ -116,111 +122,96 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         }
     }
 
-    // FALTA
+    // ==================== PROFESOR ====================
+
     @Override
-    public void crearTablaFalta() throws Exception {
-        String sql = "CREATE TABLE IF NOT EXISTS falta (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "alumnoId INTEGER NOT NULL," +
-                "dia TEXT NOT NULL," +
-                "justificada INTEGER DEFAULT 0," +
-                "FOREIGN KEY(alumnoId) REFERENCES alumno(id))";
+    public void crearTablaProfesor() throws SQLException {
+        String sql = """
+                CREATE TABLE IF NOT EXISTS profesor (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nombre TEXT NOT NULL,
+                    apellido TEXT NOT NULL,
+                    departamento TEXT NOT NULL
+                )
+                """;
         try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.execute();
         }
     }
 
     @Override
-    public void eliminarTablaFalta() throws Exception {
-        try (PreparedStatement st = conn.prepareStatement("DROP TABLE IF EXISTS falta")) {
+    public void eliminarTablaProfesor() throws SQLException {
+        try (PreparedStatement st = conn.prepareStatement("DROP TABLE IF EXISTS profesor")) {
             st.execute();
         }
     }
 
     @Override
-    public List<Falta> listarFaltas() throws SQLException {
-        List<Falta> faltas = new ArrayList<>();
-        String sql = "SELECT * FROM falta";
+    public List<Profesor> listarProfesores() throws SQLException {
+        List<Profesor> profesores = new ArrayList<>();
+        String sql = "SELECT * FROM profesor";
         try (PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                Falta f = new Falta(
+                profesores.add(new Profesor(
                         rs.getInt("id"),
-                        rs.getInt("alumnoId"),
-                        rs.getString("dia"),
-                        rs.getInt("justificada") != 0);
-                faltas.add(f);
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("departamento")
+                ));
             }
         }
-        return faltas;
+        return profesores;
     }
 
     @Override
-    public List<Falta> listarFaltasPorAlumno(int alumnoId) throws SQLException {
-        List<Falta> faltas = new ArrayList<>();
-        String sql = "SELECT * FROM falta WHERE alumnoId = ?";
+    public int insertarProfesor(Profesor p) throws SQLException {
+        String sql = "INSERT INTO profesor(nombre, apellido, departamento) VALUES (?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, alumnoId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Falta f = new Falta(
-                            rs.getInt("id"),
-                            rs.getInt("alumnoId"),
-                            rs.getString("dia"),
-                            rs.getInt("justificada") != 0);
-                    faltas.add(f);
-                }
-            }
-        }
-        return faltas;
-    }
-
-    @Override
-    public int insertarFalta(Falta f) throws SQLException {
-        String sql = "INSERT INTO falta(alumnoId, dia, justificada) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, f.getAlumnoId());
-            ps.setString(2, f.getDia());
-            ps.setInt(3, f.isJustificada() ? 1 : 0);
+            ps.setString(1, p.getNombre());
+            ps.setString(2, p.getApellido());
+            ps.setString(3, p.getDepartamento());
             return ps.executeUpdate();
         }
     }
 
     @Override
-    public int insertarFaltas(List<Falta> listaFaltas) throws SQLException {
-        String sql = "INSERT INTO falta(alumnoId, dia, justificada) VALUES (?, ?, ?)";
+    public int insertarProfesores(List<Profesor> lista) throws SQLException {
+        String sql = "INSERT INTO profesor(nombre, apellido, departamento) VALUES (?, ?, ?)";
+        boolean autoCommitPrev = conn.getAutoCommit();
+        conn.setAutoCommit(false);
+
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            conn.setAutoCommit(false);
-            for (Falta f : listaFaltas) {
-                ps.setInt(1, f.getAlumnoId());
-                ps.setString(2, f.getDia());
-                ps.setInt(3, f.isJustificada() ? 1 : 0);
+            for (Profesor p : lista) {
+                ps.setString(1, p.getNombre());
+                ps.setString(2, p.getApellido());
+                ps.setString(3, p.getDepartamento());
                 ps.addBatch();
             }
             ps.executeBatch();
-            conn.setAutoCommit(true);
         }
-        return listaFaltas.size();
+
+        conn.setAutoCommit(autoCommitPrev);
+        return lista.size();
     }
 
     @Override
-    public int actualizarFalta(Falta f) throws SQLException {
-        String sql = "UPDATE falta SET alumnoId = ?, dia = ?, justificada = ? WHERE id = ?";
+    public int actualizarProfesor(Profesor p) throws SQLException {
+        String sql = "UPDATE profesor SET nombre = ?, apellido = ?, departamento = ? WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, f.getAlumnoId());
-            ps.setString(2, f.getDia());
-            ps.setInt(3, f.isJustificada() ? 1 : 0);
-            ps.setInt(4, f.getId());
+            ps.setString(1, p.getNombre());
+            ps.setString(2, p.getApellido());
+            ps.setString(3, p.getDepartamento());
+            ps.setInt(4, p.getId());
             return ps.executeUpdate();
         }
     }
 
     @Override
-    public int borrarFalta(Falta f) throws SQLException {
-        String sql = "DELETE FROM falta WHERE id = ?";
+    public int borrarProfesor(Profesor p) throws SQLException {
+        String sql = "DELETE FROM profesor WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, f.getId());
+            ps.setInt(1, p.getId());
             return ps.executeUpdate();
         }
     }

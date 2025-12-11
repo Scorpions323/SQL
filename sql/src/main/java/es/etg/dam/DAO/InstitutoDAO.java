@@ -5,37 +5,33 @@ import java.util.List;
 
 public interface InstitutoDAO {
 
-    // MÉTODOS PARA LA GESTIÓN DE ALUMNOS
+    // METODOS PARA ALUMNOS
+    void crearTablaAlumno() throws Exception;
 
-    public void crearTablaAlumno() throws Exception;
+    void eliminarTablaAlumno() throws Exception;
 
-    public void eliminarTablaAlumno() throws Exception;
+    List<Alumno> listarAlumnos() throws SQLException;
 
-    public List<Alumno> listarAlumnos() throws SQLException;
+    int insertarAlumno(Alumno a) throws SQLException;
 
-    public int insertarAlumno(Alumno a) throws SQLException;
+    int insertarAlumnos(List<Alumno> alumnos) throws SQLException;
 
-    public int insertarAlumnos(List<Alumno> alumnos) throws SQLException;
+    int actualizarAlumno(Alumno a) throws SQLException;
 
-    public int actualizarAlumno(Alumno a) throws SQLException;
+    int borrarAlumno(Alumno a) throws SQLException;
 
-    public int borrarAlumno(Alumno a) throws SQLException;
+    // METODOS PARA PROFESORES
+    void crearTablaProfesor() throws Exception;
 
-    // MÉTODOS PARA LA GESTIÓN DE ASISTENCIAS
+    void eliminarTablaProfesor() throws Exception;
 
-    public void crearTablaFalta() throws Exception;
+    List<Profesor> listarProfesores() throws SQLException;
 
-    public void eliminarTablaFalta() throws Exception;
+    int insertarProfesor(Profesor p) throws SQLException;
 
-    public List<Falta> listarFaltas() throws SQLException;
+    int insertarProfesores(List<Profesor> profesores) throws SQLException;
 
-    public List<Falta> listarFaltasPorAlumno(int alumnoId) throws SQLException;
+    int actualizarProfesor(Profesor p) throws SQLException;
 
-    public int insertarFalta(Falta f) throws SQLException;
-
-    public int insertarFaltas(List<Falta> faltas) throws SQLException;
-
-    public int actualizarFalta(Falta f) throws SQLException;
-
-    public int borrarFalta(Falta f) throws SQLException;
+    int borrarProfesor(Profesor p) throws SQLException;
 }

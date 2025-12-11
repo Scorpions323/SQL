@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.etg.dam.DAO.Alumno;
-import es.etg.dam.DAO.Falta;
 import es.etg.dam.DAO.InstitutoDAO;
+import es.etg.dam.DAO.Profesor;
 
 public class InstitutoMockDAOImp implements InstitutoDAO {
 
     private final List<Alumno> alumnos = new ArrayList<>();
-    private final List<Falta> faltas = new ArrayList<>();
+    private final List<Profesor> profesores = new ArrayList<>();
 
     // ALUMNO
     @Override
@@ -57,50 +57,39 @@ public class InstitutoMockDAOImp implements InstitutoDAO {
         return alumnos.remove(a) ? 1 : 0;
     }
 
-    // FALTA
+    // PROFESOR
     @Override
-    public void crearTablaFalta() throws Exception {
-        faltas.clear();
+    public void crearTablaProfesor() throws Exception {
+        profesores.clear();
     }
 
     @Override
-    public void eliminarTablaFalta() throws Exception {
-        faltas.clear();
+    public void eliminarTablaProfesor() throws Exception {
+        profesores.clear();
     }
 
     @Override
-    public List<Falta> listarFaltas() throws SQLException {
-        return faltas;
+    public List<Profesor> listarProfesores() throws SQLException {
+        return profesores;
     }
 
     @Override
-    public List<Falta> listarFaltasPorAlumno(int alumnoId) throws SQLException {
-        List<Falta> resultado = new ArrayList<>();
-        for (Falta f : faltas) {
-            if (f.getAlumnoId() == alumnoId) {
-                resultado.add(f);
-            }
-        }
-        return resultado;
-    }
-
-    @Override
-    public int insertarFalta(Falta f) throws SQLException {
-        faltas.add(f);
+    public int insertarProfesor(Profesor p) throws SQLException {
+        profesores.add(p);
         return 1;
     }
 
     @Override
-    public int insertarFaltas(List<Falta> listaFaltas) throws SQLException {
-        faltas.addAll(listaFaltas);
-        return listaFaltas.size();
+    public int insertarProfesores(List<Profesor> listaProfesores) throws SQLException {
+        profesores.addAll(listaProfesores);
+        return listaProfesores.size();
     }
 
     @Override
-    public int actualizarFalta(Falta f) throws SQLException {
-        for (int i = 0; i < faltas.size(); i++) {
-            if (faltas.get(i).getId() == f.getId()) {
-                faltas.set(i, f);
+    public int actualizarProfesor(Profesor p) throws SQLException {
+        for (int i = 0; i < profesores.size(); i++) {
+            if (profesores.get(i).getId() == p.getId()) {
+                profesores.set(i, p);
                 return 1;
             }
         }
@@ -108,7 +97,7 @@ public class InstitutoMockDAOImp implements InstitutoDAO {
     }
 
     @Override
-    public int borrarFalta(Falta f) throws SQLException {
-        return faltas.remove(f) ? 1 : 0;
+    public int borrarProfesor(Profesor p) throws SQLException {
+        return profesores.remove(p) ? 1 : 0;
     }
 }
