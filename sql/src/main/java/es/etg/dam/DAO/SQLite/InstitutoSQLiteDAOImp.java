@@ -28,8 +28,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         conn = DriverManager.getConnection(url);
     }
 
-    // ==================== ALUMNO ====================
-
+    // ALUMNO
     @Override
     public void crearTablaAlumno() throws SQLException {
         String sql = """
@@ -56,8 +55,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     public List<Alumno> listarAlumnos() throws SQLException {
         List<Alumno> alumnos = new ArrayList<>();
         String sql = "SELECT * FROM alumno";
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 alumnos.add(new Alumno(
                         rs.getInt("id"),
@@ -122,8 +120,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         }
     }
 
-    // ==================== PROFESOR ====================
-
+    // PROFESOR
     @Override
     public void crearTablaProfesor() throws SQLException {
         String sql = """
@@ -150,8 +147,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     public List<Profesor> listarProfesores() throws SQLException {
         List<Profesor> profesores = new ArrayList<>();
         String sql = "SELECT * FROM profesor";
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 profesores.add(new Profesor(
                         rs.getInt("id"),

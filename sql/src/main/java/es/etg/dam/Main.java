@@ -27,9 +27,12 @@ public class Main {
             int opcionConexion = Integer.parseInt(sc.nextLine());
 
             switch (opcionConexion) {
-                case 1 -> dao = new InstitutoMockDAOImp();
-                case 2 -> dao = new InstitutoSQLiteDAOImp();
-                case 3 -> dao = new InstitutoOracleXeDAOImp();
+                case 1 ->
+                    dao = new InstitutoMockDAOImp();
+                case 2 ->
+                    dao = new InstitutoSQLiteDAOImp();
+                case 3 ->
+                    dao = new InstitutoOracleXeDAOImp();
                 default -> {
                     System.out.println("Opción no válida.");
                     return;
@@ -125,9 +128,11 @@ public class Main {
                         profesores.forEach(System.out::println);
                     }
 
-                    case 0 -> System.out.println("Saliendo...");
+                    case 0 ->
+                        System.out.println("Saliendo...");
 
-                    default -> System.out.println("Opción no válida.");
+                    default ->
+                        System.out.println("Opción no válida.");
                 }
             }
 
