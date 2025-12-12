@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Profesor {
-
     private int id;
+    private int idAlumno;
     private String nombre;
     private String apellido;
     private String departamento;
