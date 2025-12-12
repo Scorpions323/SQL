@@ -10,7 +10,6 @@ import es.etg.dam.DAO.Profesor;
 public class InstitutoMockDAOImp implements InstitutoDAO {
 
     // TABLA ALUMNOS
-
     @Override
     public void crearTablaAlumno() throws Exception {
         // TODO Auto-generated method stub
@@ -54,7 +53,6 @@ public class InstitutoMockDAOImp implements InstitutoDAO {
     }
 
     // TABLA PROFESORES
-
     @Override
     public void crearTablaProfesor() throws Exception {
         // TODO Auto-generated method stub

@@ -24,7 +24,6 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
     }
 
     // TABLAS
-
     @Override
     public void crearTablaAlumno() throws SQLException {
         String sql = """
@@ -81,7 +80,6 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
     }
 
     // ALUMNOS
-
     @Override
     public int insertarAlumno(Alumno a) throws SQLException {
         String sql = "INSERT INTO alumnos(nombre, apellido, edad) VALUES (?,?,?)";
@@ -146,7 +144,6 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
     }
 
     // PROFESORES
-
     @Override
     public int insertarProfesor(Profesor p) throws SQLException {
         String sql = "INSERT INTO profesores(idAlumno, nombre, apellido, departamento) VALUES (?,?,?,?)";

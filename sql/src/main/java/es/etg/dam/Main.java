@@ -18,7 +18,7 @@ public class Main {
         InstitutoDAO dao = null;
 
         try {
-            // MENÚ 1 - Tipo conexión
+            // MENÚ 1 - Tipo de Conexión
             System.out.println("===== SELECCIONA EL TIPO DE CONEXIÓN =====");
             System.out.println("1. Mock");
             System.out.println("2. SQLite");
@@ -37,6 +37,8 @@ public class Main {
             }
 
             int opcion = -1;
+
+            // MENÚ 2 - Operaciones
             while (opcion != 0) {
                 System.out.println("\n===== MENÚ OPERACIONES =====");
                 System.out.println("1. Crear tablas");
